@@ -1,5 +1,7 @@
 // core - react
 import React, { useState } from "react";
+import AgregarTareaFragment from "./fragments/AgregarTareaFragment";
+import MostrarTareasFragment from "./fragments/MostrarTareasFragment";
 
 const listaEjemplo = [
     {
@@ -33,7 +35,8 @@ const Tareas = () => {
         } else{
             // Creación de un nuevo objeto tarea
             let tareaNueva = {
-                id : tareas.length + 1,
+                // Nuevo cálculo debido a posibilidad de repetir ID
+                id : tareas.length != 0 ? ((Math.max(...tareas.map(tarea => tarea.id))) + 1) : 1,
                 nombre : nombreTarea
             }
             // Agregación del objeto creado a la lista tareas uniendolo junto al resto de los elementos
@@ -43,27 +46,31 @@ const Tareas = () => {
         }
     }
 
+    const handleBotonEliminarTarea = (evento, id) => {
+        setTareas(tareas.filter(elemento => elemento.id != id))
+    }
+
     return (
         <div>
             <div className="row">
                 <div className="col-12">
                     <h1>Tareas</h1>
                 </div>
-                <div className="col-12">
-                    <label htmlFor="tarea">Añadir nueva tarea</label>
-                    <input type="text" onChange={handleModificarTarea} className="form-control my-2" id="nombre-tarea" value={nombreTarea}/>
-                    <button type="button" className="btn btn-primary" onClick={handleBotonAgregarTarea}>Añadir</button>
-                </div>
+                <AgregarTareaFragment 
+                    nombreTarea={nombreTarea}
+                    handleModificarTarea={handleModificarTarea}
+                    handleBotonAgregarTarea={handleBotonAgregarTarea}
+                />
+                
                 <div className="col-12 mt-4">
                     <h2>Lista de tareas</h2>
                 </div>
-                <div className="col-12">
-                    <ul class="list-group">
-                        {
-                            tareas.map(tarea => <li className="list-group-item" key={tarea.id}>{tarea.nombre}</li>)
-                        }
-                    </ul>
-                </div>
+
+                <MostrarTareasFragment
+                    tareas={tareas}
+                    handleBotonEliminarTarea={handleBotonEliminarTarea}
+                />
+
             </div>
             
         </div>
